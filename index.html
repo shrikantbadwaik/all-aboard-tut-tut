@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trip to Vietnam? 🇻🇳</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700&family=Outfit:wght@400;600;700&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f0f23;
+            min-height: 100vh;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        html {
+            overflow: hidden;
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Video background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2;
+            background: #0f0f23; /* Fallback color while loading */
+        }
+
+        .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.8s ease-in;
+        }
+
+        .video-background video.loaded {
+            opacity: 1;
+        }
+
+        /* Dark overlay for text readability */
+        .video-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                rgba(15, 15, 35, 0.75) 0%,
+                rgba(26, 26, 62, 0.7) 50%,
+                rgba(15, 15, 35, 0.75) 100%);
+            z-index: 1;
+        }
+
+        /* Subtle animated gradient overlay for visual interest */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(78, 205, 196, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 10%, rgba(255, 195, 113, 0.15) 0%, transparent 50%);
+            animation: gradientShift 25s ease infinite;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.6; }
+            25% { transform: translate(5%, 5%) rotate(90deg); opacity: 0.8; }
+            50% { transform: translate(0, 10%) rotate(180deg); opacity: 0.6; }
+            75% { transform: translate(-5%, 5%) rotate(270deg); opacity: 0.8; }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            overflow: visible;
+        }
+
+        h1 {
+            font-family: 'Fredoka', cursive;
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffd93d 50%, #4ecdc4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out, textGlow 3s ease-in-out infinite;
+            text-shadow: 0 0 40px rgba(255, 107, 107, 0.3);
+            letter-spacing: -1px;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .emoji {
+            font-size: clamp(4rem, 12vw, 8rem);
+            margin: 30px 0;
+            animation: bounce 2s infinite, fadeIn 1s ease-in 0.3s both;
+            display: inline-block;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        .question {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.3rem, 3.5vw, 2rem);
+            color: #ffffff;
+            margin: 40px 0;
+            line-height: 1.6;
+            font-weight: 400;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-in 0.5s both;
+        }
+
+        .question strong {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 1.15em;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            font-weight: 300;
+            opacity: 0.9;
+            display: block;
+            margin-top: 15px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 60px;
+            position: relative;
+            min-height: 100px;
+        }
+
+        button {
+            font-family: 'Space Grotesk', monospace;
+            padding: 20px 50px;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            white-space: nowrap;
+        }
+
+        /* Adjust Yes button when text changes to long Marathi message */
+        .yes-btn.long-text {
+            white-space: normal;
+            line-height: 1.4;
+            padding: 15px 30px;
+            font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+            letter-spacing: 0.5px;
+            max-width: 90vw;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4),
+                        0 0 0 0 rgba(78, 205, 196, 0.5);
+            animation: fadeIn 1s ease-in 0.8s both, pulse 2s infinite;
+            transform: scale(1);
+            transform-origin: center center;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+                        all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4),
+                            0 0 0 0 rgba(78, 205, 196, 0.7);
+            }
+            70% {
+                box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4),
+                            0 0 0 20px rgba(78, 205, 196, 0);
+            }
+            100% {
+                box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4),
+                            0 0 0 0 rgba(78, 205, 196, 0);
+            }
+        }
+
+        .yes-btn:hover {
+            box-shadow: 0 15px 40px rgba(78, 205, 196, 0.6);
+        }
+
+        /* Preserve scale when hovering after growth */
+        .yes-btn[style*="transform"]:hover {
+            box-shadow: 0 15px 40px rgba(78, 205, 196, 0.6);
+        }
+
+        .no-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            position: relative;
+            transition: all 0.2s ease, transform 0.2s ease;
+            animation: fadeIn 1s ease-in 0.8s both;
+        }
+
+        .no-btn.moving {
+            position: fixed;
+            z-index: 100;
+        }
+
+        .no-btn:hover {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+        }
+
+        .celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f0f23;
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .celebration.active {
+            display: flex;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        /* Celebration video background */
+        .celebration-video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .celebration-video-bg video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.8s ease-in;
+        }
+
+        .celebration-video-bg video.loaded {
+            opacity: 1;
+        }
+
+        /* Dark overlay for celebration video */
+        .celebration-video-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                rgba(15, 15, 35, 0.7) 0%,
+                rgba(26, 26, 62, 0.65) 50%,
+                rgba(15, 15, 35, 0.7) 100%);
+            z-index: 1;
+        }
+
+        .celebration-content {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            max-width: 100%;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .celebration h2 {
+            font-family: 'Fredoka', cursive;
+            font-size: clamp(1.8rem, 6vw, 5rem);
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4ecdc4 0%, #ffd93d 50%, #ff6b6b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideDown 1s ease-out, textGlow 2s ease-in-out infinite;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .video-container {
+            max-width: 65%;
+            width: 520px;
+            margin: 15px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        0 0 0 1px rgba(255, 255, 255, 0.1);
+            animation: scaleInTransparent 0.8s ease-out 0.5s both;
+            opacity: 0.65;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .video-container:hover {
+            opacity: 0.85;
+            transform: scale(1.05);
+        }
+
+        @keyframes scaleInTransparent {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 0.65;
+                transform: scale(1);
+            }
+        }
+
+        .video-container img {
+            width: 100%;
+            height: auto;
+            border: none;
+            display: block;
+        }
+
+        .celebration p {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 600;
+            animation: fadeIn 1s ease-in 1s both;
+            padding: 0 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-30px) scale(1.1); }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                max-height: 100vh;
+            }
+
+            h1 {
+                font-size: clamp(2rem, 8vw, 3rem);
+                margin-bottom: 10px;
+            }
+
+            .emoji {
+                font-size: clamp(3rem, 10vw, 5rem);
+                margin: 15px 0;
+            }
+
+            .question {
+                font-size: clamp(1.1rem, 4vw, 1.5rem);
+                margin: 20px 0;
+            }
+
+            .subtitle {
+                font-size: clamp(0.9rem, 3vw, 1.2rem);
+                margin-top: 10px;
+            }
+
+            .buttons-container {
+                gap: 15px;
+                margin-top: 30px;
+            }
+
+            button {
+                padding: 12px 30px;
+                font-size: clamp(1rem, 3.5vw, 1.3rem);
+            }
+
+            .yes-btn {
+                max-width: 90vw;
+            }
+
+            .yes-btn.long-text {
+                padding: 10px 20px;
+                font-size: clamp(0.75rem, 2.2vw, 1rem);
+                letter-spacing: 0.3px;
+                line-height: 1.3;
+            }
+
+            .celebration h2 {
+                font-size: clamp(1.5rem, 6vw, 2.5rem);
+                margin-bottom: 15px;
+            }
+
+            .video-container {
+                max-width: 85%;
+                width: 380px;
+                margin: 10px auto;
+                opacity: 0.7;
+            }
+
+            .celebration p {
+                font-size: clamp(1rem, 4vw, 1.4rem);
+                margin-top: 15px !important;
+            }
+
+            .celebration-content {
+                padding: 15px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video id="bgVideo" autoplay muted loop playsinline preload="auto">
+            <!-- Local travel video -->
+            <source src="background-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div class="container">
+        <h1>Hey There! 👋</h1>
+        <div class="emoji">🇻🇳 ✈️ 🏖️</div>
+        <p class="question">
+            Want to go on an amazing trip to <strong>Vietnam</strong>?<br>
+            <span class="subtitle">Explore the streets of Hanoi, cruise through Ha Long Bay, and taste incredible Pho! 🍜</span>
+        </p>
+        <div class="buttons-container">
+            <button class="yes-btn" onclick="handleYes()">Yes! Let's Go! 🎉</button>
+            <button class="no-btn" id="noBtn" onclick="handleNo()">No</button>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration">
+        <!-- Celebration Video Background -->
+        <div class="celebration-video-bg">
+            <video id="celebrationVideo" muted loop playsinline preload="auto">
+                <source src="celebration-video.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
+        <div class="celebration-content">
+            <h2>🎉 YESSS! Time to pack our bags! 🎒✈️</h2>
+            <div class="video-container">
+                <img
+                    src="https://media1.tenor.com/m/uWgtjiwsoy8AAAAC/dancing-office.gif"
+                    alt="Celebration Dance"
+                    style="width: 100%; height: auto; border-radius: 15px; display: block;">
+            </div>
+            <p style="margin-top: 30px; font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 600;">Vietnam here we come! 🌏🎊</p>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const container = document.querySelector('.buttons-container');
+        let clickCount = 0;
+
+        const funnyMessages = [
+            "Are you sure? 🤔",
+            "Really? Think again! 🧐",
+            "चल की येड्या! 😜",
+            "Noooooo!!!",
+            "Haha, gotcha! Nice try! 😏",
+            "अरे चल ना! 🏝️",
+            "Pho is waiting! 🍜",
+            "Don't be like that! 😢",
+            "चल की भावा!, एवढा काय भाव खातो! 🤝",
+            "Last chance! ⚠️",
+            "बस का भो? 😏",
+            "Pretty please? 🥺",
+            "You know you want to! 😎",
+            "थोडं तरी विचार कर!, जनता माफ नाही करणार! 😤",
+            "हो ना प्लीज! 😎"
+        ];
+
+        // Make the No button jump on click (mobile and desktop)
+        function handleNo() {
+            clickCount++;
+            noBtn.textContent = funnyMessages[Math.min(clickCount - 1, funnyMessages.length - 1)];
+
+            // Make Yes button bigger each time, but cap at 2.5x scale (desktop) or 1.7x (mobile)
+            const yesBtn = document.querySelector('.yes-btn');
+            const isMobile = window.innerWidth <= 768;
+            const maxScale = isMobile ? 1.7 : 2.5;
+            const currentScale = Math.min(1 + (clickCount * 0.12), maxScale);
+
+            yesBtn.style.transform = `scale(${currentScale})`;
+            yesBtn.style.setProperty('transform', `scale(${currentScale})`, 'important');
+
+            // Change Yes button text for last 3 clicks
+            if (clickCount >= 12) {
+                yesBtn.innerHTML = "चाल लेका जाऊच,<br>आईच्या गावात मज्जाच मज्जा करू";
+                yesBtn.classList.add('long-text');
+            }
+
+            console.log(`No clicked ${clickCount} times. Yes button scale: ${currentScale}. Screen width: ${window.innerWidth}. Is mobile: ${isMobile}`);
+
+            // Add a small shrink effect to No button for feedback
+            noBtn.style.transform = 'scale(0.9)';
+
+            // Move button after a shorter delay
+            setTimeout(() => {
+                noBtn.style.transform = 'scale(1)';
+                moveButton();
+            }, 100);
+        }
+
+        function moveButton() {
+            // Get current position before making it fixed
+            const btnRect = noBtn.getBoundingClientRect();
+
+            // If first time, set current position first and prepare for smooth transition
+            if (!noBtn.classList.contains('moving')) {
+                // Set the current position
+                noBtn.style.left = btnRect.left + 'px';
+                noBtn.style.top = btnRect.top + 'px';
+                noBtn.classList.add('moving');
+
+                // Force a reflow to apply the position
+                noBtn.offsetHeight;
+            }
+
+            // Ensure smooth transition
+            noBtn.style.transition = 'left 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), top 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), transform 0.2s ease';
+
+            // Use entire viewport for free roaming with some padding
+            const padding = 40;
+            const maxX = window.innerWidth - btnRect.width - padding;
+            const maxY = window.innerHeight - btnRect.height - padding;
+
+            // Generate random position anywhere on screen
+            const randomX = Math.max(padding, Math.random() * maxX);
+            const randomY = Math.max(padding, Math.random() * maxY);
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        function handleYes() {
+            document.getElementById('celebration').classList.add('active');
+
+            // Play and fade in celebration video
+            const celebrationVideo = document.getElementById('celebrationVideo');
+            celebrationVideo.play().then(() => {
+                // Video started playing, fade it in
+                celebrationVideo.classList.add('loaded');
+            }).catch(err => {
+                console.log('Video playback failed:', err);
+                // Still show the video with fade-in even if autoplay fails
+                celebrationVideo.classList.add('loaded');
+            });
+
+            // Optional: Add confetti effect
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#11998e', '#38ef7d', '#eb3349', '#f45c43'];
+            for (let i = 0; i < 100; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.pointerEvents = 'none';
+                    confetti.style.zIndex = '9999';
+                    document.body.appendChild(confetti);
+
+                    let pos = -10;
+                    const fall = setInterval(() => {
+                        if (pos >= window.innerHeight) {
+                            clearInterval(fall);
+                            confetti.remove();
+                        } else {
+                            pos += 5;
+                            confetti.style.top = pos + 'px';
+                            confetti.style.left = (parseFloat(confetti.style.left) + (Math.random() - 0.5) * 2) + 'px';
+                        }
+                    }, 20);
+                }, i * 30);
+            }
+        }
+
+        // No initialization needed - buttons start side-by-side naturally
+
+        // Create floating particles
+        function createParticles() {
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                document.body.appendChild(particle);
+            }
+        }
+
+        createParticles();
+
+        // Smooth fade-in for background video when loaded
+        const bgVideo = document.getElementById('bgVideo');
+
+        // Function to show video
+        function showVideo() {
+            bgVideo.classList.add('loaded');
+        }
+
+        // Check if video can play
+        if (bgVideo.readyState >= 3) {
+            // Video already loaded
+            showVideo();
+        } else {
+            // Wait for video to be ready
+            bgVideo.addEventListener('canplay', showVideo, { once: true });
+            bgVideo.addEventListener('loadeddata', showVideo, { once: true });
+        }
+    </script>
+</body>
+</html>
