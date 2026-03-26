@@ -466,9 +466,45 @@
             }
         }
 
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 15px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            z-index: 10;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease;
+        }
+
+        .footer:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .footer .heart {
+            color: #ff6b6b;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 10px;
+            }
+
+            .footer {
+                font-size: 0.75rem;
+                bottom: 10px;
             }
 
             .container {
@@ -564,6 +600,11 @@
             <button class="yes-btn" onclick="handleYes()">Yes! Let's Go! 🎉</button>
             <button class="no-btn" id="noBtn" onclick="handleNo()">No</button>
         </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Crafted with <span class="heart">♥</span> by Shrikant
     </div>
 
     <div class="celebration" id="celebration">
